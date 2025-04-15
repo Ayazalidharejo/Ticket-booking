@@ -670,6 +670,10 @@ import image from "./image/img.jpg"; // Make sure this image exists in your proj
 // API base URL - update this to match your backend
 const API_URL = 'https://booking-backend-lilac.vercel.app/';
 
+
+
+https://vercel.com/ayazalidharejos-projects/booking-backend/api/users/login
+
 // Set auth token for API requests
 const setAuthToken = (token) => {
   if (token) {
@@ -817,7 +821,7 @@ const App = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}api/users/register`, {
+      const res = await axios.post("https://vercel.com/ayazalidharejos-projects/booking-backend/api/users/register", {
         username: formData.username,
         email: formData.email,
         password: formData.password,
