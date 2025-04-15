@@ -821,7 +821,7 @@ const App = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}api/users/register`, {
+      const res = await axios.post(`${API_URL}/api/users/register`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
