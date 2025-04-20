@@ -873,7 +873,7 @@ const App = () => {
       }
       
       // Create booking
-      await axios.post(`${API_URL}/bookings`, {
+      await axios.post(`${API_URL}/api/bookings`, {
         ticketId: apiTicket._id,
         quantity: parseInt(formData.quantity) || 1,
       });
@@ -890,7 +890,7 @@ const App = () => {
   const bookTicket = async (ticket) => {
     try {
       setLoading(true);
-      await axios.post(`${API_URL}/bookings`, {
+      await axios.post(`${API_URL}/api/bookings`, {
         ticketId: ticket._id,
         quantity: 1,
       });
@@ -907,7 +907,7 @@ const App = () => {
     if (!window.confirm('Are you sure you want to cancel this booking?')) return;
     try {
       setLoading(true);
-      await axios.patch(`${API_URL}/bookings/${id}/cancel`);
+      await axios.patch(`${API_URL}/api/bookings/${id}/cancel`);
       fetchBookings();
       alert('Booking cancelled successfully');
       setLoading(false);
@@ -996,7 +996,7 @@ const App = () => {
   
       // Save tickets
       for (const ticket of formattedEvent.tickets) {
-        await axios.post(`${API_URL}/tickets`, {
+        await axios.post(`${API_URL}/api/tickets`, {
           eventName: formattedEvent.name,
           ticketType: ticket.ticketType,
           price: ticket.price,
