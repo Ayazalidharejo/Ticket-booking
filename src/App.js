@@ -668,7 +668,7 @@ import axios from 'axios';
 import image from "./image/img.jpg"; // Make sure this image exists in your project
 
 // API base URL - update this to match your backend
-const API_URL ='https://booking-backend-xi.vercel.app';
+const API_URL = 'https://booking-backend-xi.vercel.app/api';
 // 'http://localhost:5000/api';
 // 'http://localhost:5000/api';
 // 'https://booking-backend-xi.vercel.app';
@@ -799,7 +799,7 @@ const App = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}/api/users/login`, {
+      const res = await axios.post(`${API_URL}/users/login`, {
         email: formData.email,
         password: formData.password,
       });
@@ -823,7 +823,7 @@ const App = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}/api/users/register`, {
+      const res = await axios.post(`${API_URL}/users/register`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
@@ -873,7 +873,7 @@ const App = () => {
       }
       
       // Create booking
-      await axios.post(`${API_URL}/api/bookings`, {
+      await axios.post(`${API_URL}/bookings`, {
         ticketId: apiTicket._id,
         quantity: parseInt(formData.quantity) || 1,
       });
@@ -890,7 +890,7 @@ const App = () => {
   const bookTicket = async (ticket) => {
     try {
       setLoading(true);
-      await axios.post(`${API_URL}/api/bookings`, {
+      await axios.post(`${API_URL}/bookings`, {
         ticketId: ticket._id,
         quantity: 1,
       });
@@ -907,7 +907,7 @@ const App = () => {
     if (!window.confirm('Are you sure you want to cancel this booking?')) return;
     try {
       setLoading(true);
-      await axios.patch(`${API_URL}/api/bookings/${id}/cancel`);
+      await axios.patch(`${API_URL}/bookings/${id}/cancel`);
       fetchBookings();
       alert('Booking cancelled successfully');
       setLoading(false);
@@ -996,7 +996,7 @@ const App = () => {
   
       // Save tickets
       for (const ticket of formattedEvent.tickets) {
-        await axios.post(`${API_URL}/api/tickets`, {
+        await axios.post(`${API_URL}/tickets`, {
           eventName: formattedEvent.name,
           ticketType: ticket.ticketType,
           price: ticket.price,
