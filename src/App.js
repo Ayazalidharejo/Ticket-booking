@@ -668,7 +668,9 @@ import axios from 'axios';
 import image from "./image/img.jpg"; // Make sure this image exists in your project
 
 // API base URL - update this to match your backend
-const API_URL = 'https://booking-backend-xi.vercel.app';
+const API_URL = 'http://localhost:5000/api';
+// 'http://localhost:5000/api';
+// 'https://booking-backend-xi.vercel.app';
 
 // Set auth token for API requests
 const setAuthToken = (token) => {
@@ -722,7 +724,10 @@ const App = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
-  const [tickets, setTickets] = useState([]);
+  events.map(event => console.log(event.location));
+
+  
+  const [tickets, setTickets] = useState([]); 
   const [bookings, setBookings] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [codeError, setCodeError] = useState(false);
@@ -793,7 +798,7 @@ const App = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}/api/users/login`, {
+      const res = await axios.post(`${API_URL}/users/login`, {
         email: formData.email,
         password: formData.password,
       });
@@ -817,7 +822,7 @@ const App = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}/api/users/register`, {
+      const res = await axios.post(`${API_URL}/users/register`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
@@ -1220,98 +1225,259 @@ const App = () => {
     </div>
   );
 
-  const renderEvents = () => (
-    <div className="container py-5">
-      <h2 className="mb-4">Upcoming Events</h2>
+
+
+
+
+
+  const getLocationMapIframe = (locationName) => {
+    // Encode the location name for use in URL
+    const encodedLocation = encodeURIComponent(locationName);
+    
+    // Return iframe with Google Maps embed
+    return `<iframe 
+      src="https://maps.google.com/maps?q=${encodedLocation}&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+      width="100%" 
+      height="300" 
+      frameBorder="0" 
+      scrolling="no" 
+      marginHeight="0" 
+      marginWidth="0"
+      allowFullScreen
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade">
+    </iframe>`;
+  };
   
-      {events.length === 0 ? (
-        <div>
-          <div className="alert alert-info">
-          Wellcome to The Evens Booking Systems
-          </div>
+  // Function to create map component for React rendering
+  const LocationMap = ({ location }) => {
+    if (!location) return null;
+    
+    return (
+      <div className="map-container rounded overflow-hidden mt-3 mb-4">
+        <div dangerouslySetInnerHTML={{ 
+          __html: getLocationMapIframe(location) 
+        }} />
+      </div>
+    );
+  };
+
+
+
+
+
+//   const renderEvents = () => (
+//     <div className="container py-5">
+//       <h2 className="mb-4">Upcoming Events</h2>
   
-          <div className="row">
-            {dummyEvents.map((event, index) => (
-              <div key={index} className="col-md-6 mb-4">
-                <div className="card shadow-sm h-100">
-                  <div className="card-body d-flex flex-column">
-                    <h4 className="card-title">{event.name}</h4>
-                    <p className="card-text">{event.description}</p>
-                    <p>📅 <strong>{event.date.toDateString()}</strong></p>
-                    <p>📍 <strong>{event.location}</strong></p>
+//       {events.length === 0 ? (
+//         <div>
+//           <div className="alert alert-info">
+//           Wellcome to The Evens Booking Systems
+//           </div>
   
-                    <div className="mt-3">
-                      <h5>🎟️ Tickets</h5>
-                      <ul className="list-group mb-3">
-                        {event.tickets.map((ticket, idx) => (
-                          <li key={idx} className="list-group-item d-flex justify-content-between align-items-center">
-                            <span>{ticket.ticketType}</span>
-                            <span>Rs {ticket.price} | Available: {ticket.availability}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+//           <div className="row">
+//             {dummyEvents.map((event, index) => (
+//               <div key={index} className="col-md-6 mb-4">
+//                 <div className="card shadow-sm h-100">
+//                   <div className="card-body d-flex flex-column">
+//                     <h4 className="card-title">{event.name}</h4>
+//                     <p className="card-text">{event.description}</p>
+//                     <p>📅 <strong>{event.date.toDateString()}</strong></p>
+//                     <p>📍 <strong>{event.location}</strong></p>
   
-                    <button 
-                      className="btn btn-success mt-auto"
-                      onClick={() => alert(`Booking event: ${event.name}`)}
-                    >
-                      Book Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+//                     <div className="mt-3">
+//                       <h5>🎟️ Tickets</h5>
+//                       <ul className="list-group mb-3">
+//                         {event.tickets.map((ticket, idx) => (
+//                           <li key={idx} className="list-group-item d-flex justify-content-between align-items-center">
+//                             <span>{ticket.ticketType}</span>
+//                             <span>Rs {ticket.price} | Available: {ticket.availability}</span>
+//                           </li>
+//                         ))}
+//                       </ul>
+//                     </div>
+  
+//                     <button 
+//                       className="btn btn-success mt-auto"
+//                       onClick={() => alert(`Booking event: ${event.name}`)}
+//                     >
+//                       Book Now
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="row">
+//           {events.map(event => (
+//             <div key={event._id} className="col-md-6 mb-4">
+//               <div className="card p-3 shadow-sm h-100">
+//                 <h4>{event.name}</h4>
+//                 <p>{event.description}</p>
+//                 <p>📅 {new Date(event.date).toLocaleDateString()}</p>
+//                 {/* <p>📍 {event.location}</p> */}
+
+//                 <p style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
+//   <svg
+//     xmlns="http://www.w3.org/2000/svg"
+//     height="18"
+//     width="18"
+//     viewBox="0 0 24 24"
+//     fill="none"
+//     stroke="#dc3545"  
+//     strokeWidth="2"
+//     strokeLinecap="round"
+//     strokeLinejoin="round"
+//     style={{ marginRight: '4px' }}
+//   >
+//     <path d="M12 21s-6-5.7-6-10a6 6 0 1 1 12 0c0 4.3-6 10-6 10z" />
+//     <circle cx="12" cy="11" r="2" />
+//   </svg>
+//   <strong>{event.location}</strong>
+// </p>
+
+
+//                 <button 
+//                   className="btn btn-primary mt-auto" 
+//                   onClick={() => { 
+//                     setSelectedEvent(event); 
+//                     setPage('eventDetail'); 
+//                   }}
+//                 >
+//                   View & Book
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+const renderEvents = () => (
+  <div className="container py-5">
+    <h2 className="mb-4">Upcoming Events</h2>
+
+    {events.length === 0 ? (
+      <div>
+        <div className="alert alert-info">
+          Welcome to The Events Booking System
         </div>
-      ) : (
+
         <div className="row">
-          {events.map(event => (
-            <div key={event._id} className="col-md-6 mb-4">
-              <div className="card p-3 shadow-sm h-100">
-                <h4>{event.name}</h4>
-                <p>{event.description}</p>
-                <p>📅 {new Date(event.date).toLocaleDateString()}</p>
-                {/* <p>📍 {event.location}</p> */}
+          {dummyEvents.map((event, index) => (
+            <div key={index} className="col-md-6 mb-4">
+              <div className="card shadow-sm h-100">
+                <div className="card-body d-flex flex-column">
+                  <h4 className="card-title">{event.name}</h4>
+                  <p className="card-text">{event.description}</p>
+                  <p>📅 <strong>{event.date.toDateString()}</strong></p>
+                  
+                  <p style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="18"
+                      width="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#dc3545"  
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ marginRight: '4px' }}
+                    >
+                      <path d="M12 21s-6-5.7-6-10a6 6 0 1 1 12 0c0 4.3-6 10-6 10z" />
+                      <circle cx="12" cy="11" r="2" />
+                    </svg>
+                    <strong>{event.location}</strong>
+                  </p>
+                  
+                  {/* Small map preview */}
+                  <div className="small-map mt-2 mb-3" style={{ height: "120px", overflow: "hidden" }}>
+                    <div dangerouslySetInnerHTML={{ 
+                      __html: getLocationMapIframe(event.location) 
+                    }} />
+                  </div>
 
-                <p style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    width="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="#dc3545"  
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ marginRight: '4px' }}
-  >
-    <path d="M12 21s-6-5.7-6-10a6 6 0 1 1 12 0c0 4.3-6 10-6 10z" />
-    <circle cx="12" cy="11" r="2" />
-  </svg>
-  <strong>{event.location}</strong>
-</p>
+                  <div className="mt-3">
+                    <h5>🎟️ Tickets</h5>
+                    <ul className="list-group mb-3">
+                      {event.tickets.map((ticket, idx) => (
+                        <li key={idx} className="list-group-item d-flex justify-content-between align-items-center">
+                          <span>{ticket.ticketType}</span>
+                          <span>Rs {ticket.price} | Available: {ticket.availability}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-
-                <button 
-                  className="btn btn-primary mt-auto" 
-                  onClick={() => { 
-                    setSelectedEvent(event); 
-                    setPage('eventDetail'); 
-                  }}
-                >
-                  View & Book
-                </button>
+                  <button 
+                    className="btn btn-success mt-auto"
+                    onClick={() => alert(`Booking event: ${event.name}`)}
+                  >
+                    Book Now
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
-      )}
-    </div>
-  );
+      </div>
+    ) : (
+      <div className="row">
+        {events.map(event => (
+          <div key={event._id} className="col-md-6 mb-4">
+            <div className="card p-3 shadow-sm h-100">
+              <h4>{event.name}</h4>
+              <p>{event.description}</p>
+              <p>📅 {new Date(event.date).toLocaleDateString()}</p>
+              
+              <p style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '0 0 10px 0' }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="18"
+                  width="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#dc3545"  
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ marginRight: '4px' }}
+                >
+                  <path d="M12 21s-6-5.7-6-10a6 6 0 1 1 12 0c0 4.3-6 10-6 10z" />
+                  <circle cx="12" cy="11" r="2" />
+                </svg>
+                <strong>{event.location}</strong>
+              </p>
+              
+              {/* Small map preview */}
+              <div className="small-map mb-3" style={{ height: "100px", overflow: "hidden" }}>
+                <div dangerouslySetInnerHTML={{ 
+                  __html: getLocationMapIframe(event.location) 
+                }} />
+              </div>
+
+              <button 
+                className="btn btn-primary mt-auto" 
+                onClick={() => { 
+                  setSelectedEvent(event); 
+                  setPage('eventDetail'); 
+                }}
+              >
+                View & Book
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
   
-  
+
 
   const renderEventDetail = () => (
     <div className="container py-5">
@@ -1390,6 +1556,52 @@ const App = () => {
     </div>
   );
 
+  // const renderAvailableTickets = () => (
+  //   <div className="container py-5">
+  //     <button className="btn btn-link mb-3" onClick={() => setPage('events')}>← Back to Events</button>
+  //     <h2 className="mb-4">Available Tickets</h2>
+  //     {tickets.length === 0 ? (
+  //       <div className="alert alert-info">No tickets available.</div>
+  //     ) : (
+  //       <div className="table-responsive">
+  //         <table className="table table-striped table-hover">
+  //           <thead className="table-dark">
+  //             <tr>
+  //               <th>Event</th>
+  //               <th>Ticket Type</th>
+  //               <th>Price</th>
+  //               <th>Availability</th>
+  //               <th>Action</th>
+             
+  //             </tr>
+  //           </thead>
+  //           <tbody>
+  //             {tickets.map((ticket) => (
+  //               <tr key={ticket._id}>
+  //                 <td>{ticket.eventName}</td>
+  //                 <td>{ticket.ticketType}</td>
+  //                 <td>£. {ticket.price}</td>
+  //                 <td>{ticket.availability}</td>
+                  
+  //                 <td>
+  //                   <button 
+  //                     className={`btn ${ticket.availability <= 0 ? 'btn-danger' : 'btn-primary'}`}
+  //                     disabled={ticket.availability <= 0}
+  //                     onClick={() => bookTicket(ticket)}
+  //                   >
+  //                     {ticket.availability <= 0 ? 'Sold Out' : 'Book Now'}
+  //                   </button>
+  //                 </td>
+  //               </tr>
+  //             ))}
+  //           </tbody>
+  //         </table>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
+
+
   const renderAvailableTickets = () => (
     <div className="container py-5">
       <button className="btn btn-link mb-3" onClick={() => setPage('events')}>← Back to Events</button>
@@ -1404,34 +1616,116 @@ const App = () => {
                 <th>Event</th>
                 <th>Ticket Type</th>
                 <th>Price</th>
+                <th>Location</th>
                 <th>Availability</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {tickets.map((ticket) => (
-                <tr key={ticket._id}>
-                  <td>{ticket.eventName}</td>
-                  <td>{ticket.ticketType}</td>
-                  <td>£. {ticket.price}</td>
-                  <td>{ticket.availability}</td>
-                  <td>
-                    <button 
-                      className={`btn ${ticket.availability <= 0 ? 'btn-danger' : 'btn-primary'}`}
-                      disabled={ticket.availability <= 0}
-                      onClick={() => bookTicket(ticket)}
-                    >
-                      {ticket.availability <= 0 ? 'Sold Out' : 'Book Now'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {tickets.map((ticket) => {
+                // Find the corresponding event to get its location
+                const eventForTicket = events.find(event => event.name === ticket.eventName);
+                const location = eventForTicket ? eventForTicket.location : "Location not available";
+                
+                return (
+                  <tr key={ticket._id}>
+                    <td>{ticket.eventName}</td>
+                    <td>{ticket.ticketType}</td>
+                    <td>£. {ticket.price}</td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="16"
+                          width="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#dc3545"  
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={{ marginRight: '6px' }}
+                        >
+                          <path d="M12 21s-6-5.7-6-10a6 6 0 1 1 12 0c0 4.3-6 10-6 10z" />
+                          <circle cx="12" cy="11" r="2" />
+                        </svg>
+                        {location}
+                      </div>
+                    </td>
+                    <td>{ticket.availability}</td>
+                    <td>
+                      <button 
+                        className={`btn ${ticket.availability <= 0 ? 'btn-danger' : 'btn-primary'}`}
+                        disabled={ticket.availability <= 0}
+                        onClick={() => bookTicket(ticket)}
+                      >
+                        {ticket.availability <= 0 ? 'Sold Out' : 'Book Now'}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
     </div>
   );
+
+
+  // const renderPurchases = () => (
+  //   <div className="container py-5">
+  //     <button className="btn btn-link mb-3" onClick={() => setPage('events')}>← Back to Events</button>
+  //     <h2 className="mb-4">My Purchases</h2>
+  //     {bookings.length === 0 ? (
+  //       <div className="alert alert-info">You haven't made any bookings yet.</div>
+  //     ) : (
+  //       <div className="table-responsive">
+  //         <table className="table table-bordered table-hover">
+  //           <thead className="table-dark">
+  //             <tr>
+  //               <th>🎟️ Event Name</th>
+  //               <th>🎫 Ticket Type</th>
+  //               <th>🧍 Quantity</th>
+  //               <th>💰 Price</th>
+  //               <th>📅 Booking Date</th>
+  //               <th>Status</th>
+  //               <th>❌ Action</th>
+  //             </tr>
+  //           </thead>
+  //           <tbody>
+  //             {bookings.map((booking) => (
+  //               <tr key={booking._id}>
+  //                 <td>{booking.eventName}</td>
+  //                 <td>{booking.ticketType}</td>
+  //                 <td>{booking.quantity}</td>
+  //                 <td>£. {booking.price}</td>
+  //                 <td>{new Date(booking.bookingDate).toLocaleString()}</td>
+  //                 <td>
+  //                   <span className={booking.status === 'active' ? 'text-success' : 'text-danger'}>
+  //                     {booking.status === 'active' ? '✅ Active' : '❌ Cancelled'}
+  //                   </span>
+  //                 </td>
+  //                 <td>
+  //                   {booking.status === 'active' && (
+  //                     <button
+  //                       className="btn btn-sm btn-danger"
+  //                       onClick={() => cancelBooking(booking._id)}
+  //                     >
+  //                       Cancel
+  //                     </button>
+  //                   )}
+  //                 </td>
+  //               </tr>
+  //             ))}
+  //           </tbody>
+  //         </table>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
+
+
 
   const renderPurchases = () => (
     <div className="container py-5">
@@ -1445,6 +1739,7 @@ const App = () => {
             <thead className="table-dark">
               <tr>
                 <th>🎟️ Event Name</th>
+                <th>📍 Location</th>
                 <th>🎫 Ticket Type</th>
                 <th>🧍 Quantity</th>
                 <th>💰 Price</th>
@@ -1454,36 +1749,64 @@ const App = () => {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking._id}>
-                  <td>{booking.eventName}</td>
-                  <td>{booking.ticketType}</td>
-                  <td>{booking.quantity}</td>
-                  <td>£. {booking.price}</td>
-                  <td>{new Date(booking.bookingDate).toLocaleString()}</td>
-                  <td>
-                    <span className={booking.status === 'active' ? 'text-success' : 'text-danger'}>
-                      {booking.status === 'active' ? '✅ Active' : '❌ Cancelled'}
-                    </span>
-                  </td>
-                  <td>
-                    {booking.status === 'active' && (
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => cancelBooking(booking._id)}
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {bookings.map((booking) => {
+                // Find the corresponding event to get its location
+                const eventForBooking = events.find(event => event.name === booking.eventName);
+                const location = eventForBooking ? eventForBooking.location : "Location not available";
+                
+                return (
+                  <tr key={booking._id}>
+                    <td>{booking.eventName}</td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="16"
+                          width="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#dc3545"  
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={{ marginRight: '6px' }}
+                        >
+                          <path d="M12 21s-6-5.7-6-10a6 6 0 1 1 12 0c0 4.3-6 10-6 10z" />
+                          <circle cx="12" cy="11" r="2" />
+                        </svg>
+                        {location}
+                      </div>
+                    </td>
+                    <td>{booking.ticketType}</td>
+                    <td>{booking.quantity}</td>
+                    <td>£. {booking.price}</td>
+                    <td>{new Date(booking.bookingDate).toLocaleString()}</td>
+                    <td>
+                      <span className={booking.status === 'active' ? 'text-success' : 'text-danger'}>
+                        {booking.status === 'active' ? '✅ Active' : '❌ Cancelled'}
+                      </span>
+                    </td>
+                    <td>
+                      {booking.status === 'active' && (
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => cancelBooking(booking._id)}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
     </div>
   );
+
+
 
   const renderCreateEvent = () => (
     <div className="container py-5">
