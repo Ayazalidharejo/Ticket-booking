@@ -663,6 +663,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import axios from 'axios';
 import image from "./image/img.jpg"; // Make sure this image exists in your project
@@ -1064,38 +1065,97 @@ const App = () => {
   };
 
   // UI Components
+  // const renderNavbar = () => (
+  //   <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  //     <div className="container-fluid">
+  //       <div className="row w-100 align-items-center">
+  //         {/* Left - App Name */}
+  //         <div className="col-12 col-md-3 text-center text-md-start mb-2 mb-md-0">
+  //           <span className="navbar-brand">🎫 Event Booking System</span>
+  //         </div>
+  
+  //         {/* Center - Navigation Buttons */}
+  //         <div className="col-12 col-md-6 text-center mb-2 mb-md-0">
+  //           <button className="btn btn-outline-light mx-1" onClick={() => setPage('events')}>
+  //             Events
+  //           </button>
+  //           <button className="btn btn-outline-light mx-1" onClick={() => setPage('availableTickets')}>
+  //             Available Tickets
+  //           </button>
+  //           <button className="btn btn-outline-light mx-1" onClick={() => setPage('purchases')}>
+  //             My Purchases
+  //           </button>
+  //           <button className="btn btn-outline-light mx-1" onClick={() => setPage('createEvent')}>
+  //             Create Event
+  //           </button>
+  //         </div>
+  
+  //         {/* Right - User info & Logout */}
+  //         <div className="col-12 col-md-3 text-center text-md-end">
+  //           <span className="text-light me-3">Hi, {username}</span>
+  //           <button className="btn btn-danger" onClick={logout}>
+  //             Logout
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </nav>
+  // );
+  
+  
   const renderNavbar = () => (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+    <nav className="navbar navbar-expand-md navbar-dark bg-dark px-3">
       <div className="container-fluid">
-        <div className="row w-100 align-items-center">
-          {/* Left - App Name */}
-          <div className="col-12 col-md-3 text-center text-md-start mb-2 mb-md-0">
-            <span className="navbar-brand">🎫 Event Booking System</span>
-          </div>
+        {/* Brand */}
+        <span className="navbar-brand">🎫 Event Booking System</span>
   
-          {/* Center - Navigation Buttons */}
-          <div className="col-12 col-md-6 text-center mb-2 mb-md-0">
-            <button className="btn btn-outline-light mx-1" onClick={() => setPage('events')}>
-              Events
-            </button>
-            <button className="btn btn-outline-light mx-1" onClick={() => setPage('availableTickets')}>
-              Available Tickets
-            </button>
-            <button className="btn btn-outline-light mx-1" onClick={() => setPage('purchases')}>
-              My Purchases
-            </button>
-            <button className="btn btn-outline-light mx-1" onClick={() => setPage('createEvent')}>
-              Create Event
-            </button>
-          </div>
+        {/* Toggler for mobile */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          aria-controls="navbarContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
   
-          {/* Right - User info & Logout */}
-          <div className="col-12 col-md-3 text-center text-md-end">
-            <span className="text-light me-3">Hi, {username}</span>
-            <button className="btn btn-danger" onClick={logout}>
-              Logout
-            </button>
-          </div>
+        {/* Collapsible content */}
+        <div className="collapse navbar-collapse" id="navbarContent">
+          {/* Center - Nav buttons (mobile dropdown + desktop inline) */}
+          <ul className="navbar-nav me-auto w-100 justify-content-center text-center my-1">
+            <li className="nav-item my-1 mx-1">
+              <button className="btn btn-outline-light w-100" onClick={() => setPage('events')}>
+                Events
+              </button>
+            </li>
+            <li className="nav-item my-1 mx-1">
+              <button className="btn btn-outline-light w-100" onClick={() => setPage('availableTickets')}>
+                Available Tickets
+              </button>
+            </li>
+            <li className="nav-item my-1 mx-1">
+              <button className="btn btn-outline-light w-100" onClick={() => setPage('purchases')}>
+                My Purchases
+              </button>
+            </li>
+            <li className="nav-item my-1 mx-1">
+              <button className="btn btn-outline-light w-100" onClick={() => setPage('createEvent')}>
+                Create Event
+              </button>
+            </li>
+          </ul>
+  
+          <div className="d-flex flex-colum flex-md-row align-items-center justify-content-between justify-content-md-end w-100 mt-3 mt-md-0">
+  <span className="text-light mx-2">Hi, {username}</span>
+  <button className="btn btn-danger" onClick={logout}>
+    Logout
+  </button>
+</div>
+
+
         </div>
       </div>
     </nav>
@@ -1604,7 +1664,7 @@ const renderEvents = () => (
 
 
   const renderAvailableTickets = () => (
-    <div className="container py-5">
+    <div className="container py-5 ">
       <button className="btn btn-link mb-3" onClick={() => setPage('events')}>← Back to Events</button>
       <h2 className="mb-4">Available Tickets</h2>
       {tickets.length === 0 ? (
@@ -1839,28 +1899,29 @@ const renderEvents = () => (
               ></textarea>
             </div>
             
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <label className="form-label">Date</label>
-                <input 
-                  type="date" 
-                  className="form-control"
-                  value={newEvent.date}
-                  onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
-                  required 
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label">Location</label>
-                <input 
-                  type="text" 
-                  className="form-control"
-                  value={newEvent.location}
-                  onChange={(e) => setNewEvent({...newEvent, location: e.target.value})}
-                  required 
-                />
-              </div>
-            </div>
+            <div className="custom-form-row">
+  <div className="custom-form-col">
+    <label className="form-label">Date</label>
+    <input 
+      type="date" 
+      className="form-control"
+      value={newEvent.date}
+      onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+      required 
+    />
+  </div>
+  <div className="custom-form-col">
+    <label className="form-label">Location</label>
+    <input 
+      type="text" 
+      className="form-control"
+      value={newEvent.location}
+      onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+      required 
+    />
+  </div>
+</div>
+
             
             <h4 className="mt-4 mb-3">Ticket Types</h4>
             
