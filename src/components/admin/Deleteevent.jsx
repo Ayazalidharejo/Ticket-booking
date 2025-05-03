@@ -121,7 +121,7 @@ const DeleteEvent = () => {
         };
         
         // Fetch events from backend
-        const response = await axios.get('http://localhost:5000/api/events', config);
+        const response = await axios.get('https://booking-backend-xi.vercel.app/api/events', config);
         setEvents(response.data);  // Set events from the API
         setLoading(false);
       } catch (err) {
