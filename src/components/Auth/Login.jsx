@@ -860,7 +860,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light px-3">
+    <div className="min-vh-100 d-flex align-items-center justify-content-center  px-3">
       <div
         className="card p-4 shadow-sm border-0 w-100"
         style={{ maxWidth: '420px', borderRadius: '1rem' }}

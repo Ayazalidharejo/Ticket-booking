@@ -675,6 +675,7 @@
 
 // export default Register;
 
+
 // import React, { useState, useContext } from 'react';
 // import { useNavigate, Link } from 'react-router-dom';
 // import AuthContext from '../context/Authcontext';
@@ -807,7 +808,11 @@
 
 // export default Register;
 
-import React, { useState, useContext } from 'react';
+
+
+
+
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/Authcontext';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -821,81 +826,118 @@ const Register = () => {
     accessKey: ''
   });
 
+  const [formErrors, setFormErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
   const { register, error, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  if (isAuthenticated) {
-    navigate('/');
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const { username, email, password, role, accessKey } = formData;
 
-  const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!username.trim()) {
+      errors.username = 'Username is required';
+    }
+    
+    if (!email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Email is invalid';
+    }
+    
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (role === 'admin' && !accessKey) {
+      errors.accessKey = 'Access key is required for admin registration';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const success = await register(formData);
-    if (success) {
-      navigate('/');
+    if (validateForm()) {
+      setSubmitting(true);
+      try {
+        console.log('Submitting registration form', formData);
+        const success = await register(formData);
+        if (success) {
+          navigate('/');
+        }
+      } catch (err) {
+        console.error('Error during form submission:', err);
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light px-3">
-      <div className="card shadow-sm border-0 rounded-4 p-4 w-100" style={{ maxWidth: '500px' }}>
+    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <div className="card shadow-lg border-0 rounded-4 p-4" style={{ width: '100%', maxWidth: '500px' }}>
         <div className="card-body">
-          <h3 className="text-center fw-bold text-primary mb-4">
+          <h2 className="card-title text-center mb-4 fw-bold text-primary">
             <i className="bi bi-person-plus-fill me-2"></i>Register
-          </h3>
-
-          {error && <div className="alert alert-danger text-center">{error}</div>}
-
+          </h2>
+          
+          {error && <div className="alert alert-danger">{error}</div>}
+          
           <form onSubmit={onSubmit}>
             <div className="mb-3">
               <label className="form-label">Username</label>
               <div className="input-group">
-                <span className="input-group-text">
-                  <i className="bi bi-person-fill"></i>
-                </span>
+                <span className="input-group-text"><i className="bi bi-person-fill"></i></span>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${formErrors.username ? 'is-invalid' : ''}`}
                   name="username"
                   value={username}
                   onChange={onChange}
                   required
                 />
               </div>
+              {formErrors.username && <div className="invalid-feedback d-block">{formErrors.username}</div>}
             </div>
-
+            
             <div className="mb-3">
               <label className="form-label">Email</label>
               <div className="input-group">
-                <span className="input-group-text">
-                  <i className="bi bi-envelope-fill"></i>
-                </span>
+                <span className="input-group-text"><i className="bi bi-envelope-fill"></i></span>
                 <input
                   type="email"
-                  className="form-control"
+                  className={`form-control ${formErrors.email ? 'is-invalid' : ''}`}
                   name="email"
                   value={email}
                   onChange={onChange}
                   required
                 />
               </div>
+              {formErrors.email && <div className="invalid-feedback d-block">{formErrors.email}</div>}
             </div>
-
+            
             <div className="mb-3">
               <label className="form-label">Password</label>
               <div className="input-group">
-                <span className="input-group-text">
-                  <i className="bi bi-lock-fill"></i>
-                </span>
+                <span className="input-group-text"><i className="bi bi-lock-fill"></i></span>
                 <input
                   type="password"
-                  className="form-control"
+                  className={`form-control ${formErrors.password ? 'is-invalid' : ''}`}
                   name="password"
                   value={password}
                   onChange={onChange}
@@ -903,8 +945,9 @@ const Register = () => {
                   required
                 />
               </div>
+              {formErrors.password && <div className="invalid-feedback d-block">{formErrors.password}</div>}
             </div>
-
+            
             <div className="mb-3">
               <label className="form-label">Role</label>
               <select
@@ -917,38 +960,48 @@ const Register = () => {
                 <option value="admin">Admin</option>
               </select>
             </div>
-
+            
             {role === 'admin' && (
               <div className="mb-3">
                 <label className="form-label">Admin Access Key</label>
                 <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="bi bi-key-fill"></i>
-                  </span>
+                  <span className="input-group-text"><i className="bi bi-key-fill"></i></span>
                   <input
                     type="password"
-                    className="form-control"
+                    className={`form-control ${formErrors.accessKey ? 'is-invalid' : ''}`}
                     name="accessKey"
                     value={accessKey}
                     onChange={onChange}
-                    required
+                    required={role === 'admin'}
                   />
                 </div>
+                {formErrors.accessKey && <div className="invalid-feedback d-block">{formErrors.accessKey}</div>}
+                <small className="text-muted">This key is required for admin registration and should be provided by system administrators.</small>
               </div>
             )}
-
+            
             <div className="d-grid mt-4">
-              <button type="submit" className="btn btn-primary btn-lg fw-semibold">
-                <i className="bi bi-check-circle-fill me-2"></i>Register
+              <button 
+                type="submit" 
+                className="btn btn-primary btn-lg shadow-sm"
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-check-circle-fill me-2"></i> Register
+                  </>
+                )}
               </button>
             </div>
           </form>
-
-          <p className="mt-4 text-center text-muted">
-            Already have an account?{' '}
-            <Link to="/login" className="text-decoration-none text-primary fw-semibold">
-              Login
-            </Link>
+          
+          <p className="mt-3 text-center text-muted">
+            Already have an account? <Link to="/login" className="text-decoration-none">Login</Link>
           </p>
         </div>
       </div>
