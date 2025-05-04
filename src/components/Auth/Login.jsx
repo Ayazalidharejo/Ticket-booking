@@ -693,6 +693,136 @@
 // };
 
 // export default Login;
+
+// import React, { useState, useContext } from 'react';
+// import { useNavigate, Link } from 'react-router-dom';
+// import AuthContext from '../context/Authcontext';
+
+// const Login = () => {
+//   const [formData, setFormData] = useState({
+//     email: '',
+//     password: ''
+//   });
+//   const [showPassword, setShowPassword] = useState(false);
+
+//   const { login, error, isAuthenticated } = useContext(AuthContext);
+//   const navigate = useNavigate();
+
+//   if (isAuthenticated) {
+//     navigate('/');
+//   }
+
+//   const { email, password } = formData;
+
+//   const onChange = (e) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const onSubmit = async (e) => {
+//     e.preventDefault();
+//     const success = await login(formData);
+//     if (success) {
+//       navigate('/');
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   return (
+//     <div
+//       className="min-vh-100 d-flex align-items-center justify-content-center"
+//       style={{
+//         background: 'linear-gradient(to right, #00c6ff, #0072ff)',
+//         padding: '20px'
+//       }}
+//     >
+//       <div
+//         className="card p-4 shadow-lg border-0"
+//         style={{
+//           maxWidth: '480px',
+//           width: '100%',
+//           borderRadius: '1rem',
+//           backdropFilter: 'blur(20px)',
+//           backgroundColor: 'rgba(255, 255, 255, 0.1)',
+//           color: '#fff'
+//         }}
+//       >
+//         <div className="card-body">
+//           <h2 className="text-center fw-bold mb-4">
+//             <i className="bi bi-box-arrow-in-right me-2"></i>Login
+//           </h2>
+
+//           {error && (
+//             <div className="alert alert-danger text-center">{error}</div>
+//           )}
+
+//           <form onSubmit={onSubmit}>
+//             <div className="mb-3">
+//               <label className="form-label">Email</label>
+//               <div className="input-group">
+//                 <span className="input-group-text bg-white">
+//                   <i className="bi bi-envelope-fill"></i>
+//                 </span>
+//                 <input
+//                   type="email"
+//                   className="form-control"
+//                   name="email"
+//                   value={email}
+//                   onChange={onChange}
+//                   required
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="mb-3 position-relative">
+//               <label className="form-label">Password</label>
+//               <div className="input-group">
+//                 <span className="input-group-text bg-white">
+//                   <i className="bi bi-lock-fill"></i>
+//                 </span>
+//                 <input
+//                   type={showPassword ? 'text' : 'password'}
+//                   className="form-control"
+//                   name="password"
+//                   value={password}
+//                   onChange={onChange}
+//                   minLength="6"
+//                   required
+//                 />
+//                 <button
+//                   type="button"
+//                   className="btn btn-outline-secondary"
+//                   onClick={togglePasswordVisibility}
+//                   style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+//                 >
+//                   <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+//                 </button>
+//               </div>
+//             </div>
+
+//             <div className="d-grid mt-4">
+//               <button type="submit" className="btn btn-light btn-lg fw-bold">
+//                 <i className="bi bi-box-arrow-in-right me-2"></i>Login
+//               </button>
+//             </div>
+//           </form>
+
+//           <p className="mt-4 text-center text-white">
+//             Don't have an account?{' '}
+//             <Link to="/register" className="text-warning fw-semibold text-decoration-none">
+//               Register here
+//             </Link>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Login;
+
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/Authcontext';
@@ -730,28 +860,15 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="min-vh-100 d-flex align-items-center justify-content-center"
-      style={{
-        background: 'linear-gradient(to right, #00c6ff, #0072ff)',
-        padding: '20px'
-      }}
-    >
+    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light px-3">
       <div
-        className="card p-4 shadow-lg border-0"
-        style={{
-          maxWidth: '480px',
-          width: '100%',
-          borderRadius: '1rem',
-          backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          color: '#fff'
-        }}
+        className="card p-4 shadow-sm border-0 w-100"
+        style={{ maxWidth: '420px', borderRadius: '1rem' }}
       >
         <div className="card-body">
-          <h2 className="text-center fw-bold mb-4">
+          <h3 className="text-center fw-bold mb-4 text-primary">
             <i className="bi bi-box-arrow-in-right me-2"></i>Login
-          </h2>
+          </h3>
 
           {error && (
             <div className="alert alert-danger text-center">{error}</div>
@@ -761,7 +878,7 @@ const Login = () => {
             <div className="mb-3">
               <label className="form-label">Email</label>
               <div className="input-group">
-                <span className="input-group-text bg-white">
+                <span className="input-group-text">
                   <i className="bi bi-envelope-fill"></i>
                 </span>
                 <input
@@ -775,10 +892,10 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="mb-3 position-relative">
+            <div className="mb-3">
               <label className="form-label">Password</label>
               <div className="input-group">
-                <span className="input-group-text bg-white">
+                <span className="input-group-text">
                   <i className="bi bi-lock-fill"></i>
                 </span>
                 <input
@@ -794,7 +911,6 @@ const Login = () => {
                   type="button"
                   className="btn btn-outline-secondary"
                   onClick={togglePasswordVisibility}
-                  style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                 >
                   <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
                 </button>
@@ -802,15 +918,15 @@ const Login = () => {
             </div>
 
             <div className="d-grid mt-4">
-              <button type="submit" className="btn btn-light btn-lg fw-bold">
+              <button type="submit" className="btn btn-primary btn-lg fw-semibold">
                 <i className="bi bi-box-arrow-in-right me-2"></i>Login
               </button>
             </div>
           </form>
 
-          <p className="mt-4 text-center text-white">
+          <p className="mt-4 text-center">
             Don't have an account?{' '}
-            <Link to="/register" className="text-warning fw-semibold text-decoration-none">
+            <Link to="/register" className="text-decoration-none text-primary fw-semibold">
               Register here
             </Link>
           </p>

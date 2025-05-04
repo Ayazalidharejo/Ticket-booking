@@ -674,11 +674,143 @@
 // };
 
 // export default Register;
+
+// import React, { useState, useContext } from 'react';
+// import { useNavigate, Link } from 'react-router-dom';
+// import AuthContext from '../context/Authcontext';
+// import 'bootstrap-icons/font/bootstrap-icons.css';
+
+
+// const Register = () => {
+//   const [formData, setFormData] = useState({
+//     username: '',
+//     email: '',
+//     password: '',
+//     role: 'user',
+//     accessKey: ''
+//   });
+
+//   const { register, error, isAuthenticated } = useContext(AuthContext);
+//   const navigate = useNavigate();
+
+//   if (isAuthenticated) {
+//     navigate('/');
+//   }
+
+//   const { username, email, password, role, accessKey } = formData;
+
+//   const onChange = (e) =>
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+//   const onSubmit = async (e) => {
+//     e.preventDefault();
+//     const success = await register(formData);
+//     if (success) {
+//       navigate('/');
+//     }
+//   };
+
+//   return (
+//     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+//       <div className="card shadow-lg border-0 rounded-4 p-4" style={{ width: '100%', maxWidth: '500px' }}>
+//         <div className="card-body">
+//           <h2 className="card-title text-center mb-4 fw-bold text-primary">
+//             <i className="bi bi-person-plus-fill me-2"></i>Register
+//           </h2>
+//           {error && <div className="alert alert-danger">{error}</div>}
+//           <form onSubmit={onSubmit}>
+//             <div className="mb-3">
+//               <label className="form-label">Username</label>
+//               <div className="input-group">
+//                 <span className="input-group-text"><i className="bi bi-person-fill"></i></span>
+//                 <input
+//                   type="text"
+//                   className="form-control"
+//                   name="username"
+//                   value={username}
+//                   onChange={onChange}
+//                   required
+//                 />
+//               </div>
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Email</label>
+//               <div className="input-group">
+//                 <span className="input-group-text"><i className="bi bi-envelope-fill"></i></span>
+//                 <input
+//                   type="email"
+//                   className="form-control"
+//                   name="email"
+//                   value={email}
+//                   onChange={onChange}
+//                   required
+//                 />
+//               </div>
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Password</label>
+//               <div className="input-group">
+//                 <span className="input-group-text"><i className="bi bi-lock-fill"></i></span>
+//                 <input
+//                   type="password"
+//                   className="form-control"
+//                   name="password"
+//                   value={password}
+//                   onChange={onChange}
+//                   minLength="6"
+//                   required
+//                 />
+//               </div>
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Role</label>
+//               <select
+//                 className="form-select"
+//                 name="role"
+//                 value={role}
+//                 onChange={onChange}
+//               >
+//                 <option value="user">User</option>
+//                 <option value="admin">Admin</option>
+//               </select>
+//             </div>
+//             {role === 'admin' && (
+//               <div className="mb-3">
+//                 <label className="form-label">Admin Access Key</label>
+//                 <div className="input-group">
+//                   <span className="input-group-text"><i className="bi bi-key-fill"></i></span>
+//                   <input
+//                     type="password"
+//                     className="form-control"
+//                     name="accessKey"
+//                     value={accessKey}
+//                     onChange={onChange}
+//                     required
+//                   />
+//                 </div>
+//               </div>
+//             )}
+//             <div className="d-grid mt-4">
+//               <button type="submit" className="btn btn-primary btn-lg shadow-sm">
+//                 <i className="bi bi-check-circle-fill me-2"></i> Register
+//               </button>
+//             </div>
+//           </form>
+//           <p className="mt-3 text-center text-muted">
+//             Already have an account? <Link to="/login" className="text-decoration-none">Login</Link>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Register;
+
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/Authcontext';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -698,8 +830,9 @@ const Register = () => {
 
   const { username, email, password, role, accessKey } = formData;
 
-  const onChange = (e) =>
+  const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -710,18 +843,22 @@ const Register = () => {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-      <div className="card shadow-lg border-0 rounded-4 p-4" style={{ width: '100%', maxWidth: '500px' }}>
+    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light px-3">
+      <div className="card shadow-sm border-0 rounded-4 p-4 w-100" style={{ maxWidth: '500px' }}>
         <div className="card-body">
-          <h2 className="card-title text-center mb-4 fw-bold text-primary">
+          <h3 className="text-center fw-bold text-primary mb-4">
             <i className="bi bi-person-plus-fill me-2"></i>Register
-          </h2>
-          {error && <div className="alert alert-danger">{error}</div>}
+          </h3>
+
+          {error && <div className="alert alert-danger text-center">{error}</div>}
+
           <form onSubmit={onSubmit}>
             <div className="mb-3">
               <label className="form-label">Username</label>
               <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-person-fill"></i></span>
+                <span className="input-group-text">
+                  <i className="bi bi-person-fill"></i>
+                </span>
                 <input
                   type="text"
                   className="form-control"
@@ -732,10 +869,13 @@ const Register = () => {
                 />
               </div>
             </div>
+
             <div className="mb-3">
               <label className="form-label">Email</label>
               <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-envelope-fill"></i></span>
+                <span className="input-group-text">
+                  <i className="bi bi-envelope-fill"></i>
+                </span>
                 <input
                   type="email"
                   className="form-control"
@@ -746,10 +886,13 @@ const Register = () => {
                 />
               </div>
             </div>
+
             <div className="mb-3">
               <label className="form-label">Password</label>
               <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-lock-fill"></i></span>
+                <span className="input-group-text">
+                  <i className="bi bi-lock-fill"></i>
+                </span>
                 <input
                   type="password"
                   className="form-control"
@@ -761,6 +904,7 @@ const Register = () => {
                 />
               </div>
             </div>
+
             <div className="mb-3">
               <label className="form-label">Role</label>
               <select
@@ -773,11 +917,14 @@ const Register = () => {
                 <option value="admin">Admin</option>
               </select>
             </div>
+
             {role === 'admin' && (
               <div className="mb-3">
                 <label className="form-label">Admin Access Key</label>
                 <div className="input-group">
-                  <span className="input-group-text"><i className="bi bi-key-fill"></i></span>
+                  <span className="input-group-text">
+                    <i className="bi bi-key-fill"></i>
+                  </span>
                   <input
                     type="password"
                     className="form-control"
@@ -789,14 +936,19 @@ const Register = () => {
                 </div>
               </div>
             )}
+
             <div className="d-grid mt-4">
-              <button type="submit" className="btn btn-primary btn-lg shadow-sm">
-                <i className="bi bi-check-circle-fill me-2"></i> Register
+              <button type="submit" className="btn btn-primary btn-lg fw-semibold">
+                <i className="bi bi-check-circle-fill me-2"></i>Register
               </button>
             </div>
           </form>
-          <p className="mt-3 text-center text-muted">
-            Already have an account? <Link to="/login" className="text-decoration-none">Login</Link>
+
+          <p className="mt-4 text-center text-muted">
+            Already have an account?{' '}
+            <Link to="/login" className="text-decoration-none text-primary fw-semibold">
+              Login
+            </Link>
           </p>
         </div>
       </div>

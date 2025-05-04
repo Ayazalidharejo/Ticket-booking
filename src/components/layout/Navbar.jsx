@@ -441,53 +441,299 @@
 
 // export default Navbar;
 
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// import React, { useContext } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import AuthContext from '../context/Authcontext';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+
+// const Navbar = () => {
+//   const { isAuthenticated, isAdmin, user, logout } = useContext(AuthContext);
+//   const navigate = useNavigate();
+
+//   const handleLogout = () => {
+//     logout();
+//     navigate('/');
+//   };
+
+//   return (
+//     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+//       <div className="container-fluid">
+//         <Link className="navbar-brand fw-bold" to="/">
+//           🎟️ Ticket Booking
+//         </Link>
+//         <button
+//           className="navbar-toggler"
+//           type="button"
+//           data-bs-toggle="collapse"
+//           data-bs-target="#navbarContent"
+//           aria-controls="navbarContent"
+//           aria-expanded="false"
+//           aria-label="Toggle navigation"
+//         >
+//           <span className="navbar-toggler-icon"></span>
+//         </button>
+
+//         <div className="collapse navbar-collapse" id="navbarContent">
+//           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+//             <li className="nav-item">
+//               <Link className="nav-link" to="/">Home</Link>
+//             </li>
+//             {isAuthenticated && (
+//               <>
+//                 <li className="nav-item">
+//                   <Link className="nav-link" to="/events">Events</Link>
+//                 </li>
+//                 <li className="nav-item">
+//                   <Link className="nav-link" to="/my-bookings">My Bookings</Link>
+//                 </li>
+//                 {isAdmin && (
+//                   <li className="nav-item">
+//                     <Link className="nav-link" to="/admin">Admin</Link>
+//                   </li>
+//                 )}
+//               </>
+//             )}
+//           </ul>
+
+//           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+//             {!isAuthenticated ? (
+//               <>
+//                 <li className="nav-item">
+//                   <Link className="nav-link" to="/login">Login</Link>
+//                 </li>
+//                 <li className="nav-item">
+//                   <Link className="nav-link" to="/register">Register</Link>
+//                 </li>
+//               </>
+//             ) : (
+//               <>
+//                 <li className="nav-item d-flex align-items-center text-white me-3">
+//                   <i className="bi bi-person-circle me-1"></i>
+//                   {user?.username}
+//                 </li>
+//                 <li className="nav-item">
+//                   <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+//                     Logout
+//                   </button>
+//                 </li>
+//               </>
+//             )}
+//           </ul>
+//         </div>
+//       </div>
+//     </nav>
+//   );
+// };
+
+// export default Navbar;
+
+import React, { useContext, useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../context/Authcontext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const Navbar = () => {
   const { isAuthenticated, isAdmin, user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  // Handle window resize for responsive design
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+      if (window.innerWidth >= 992) {
+        setIsNavCollapsed(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Handle scroll for navbar styling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close mobile navbar when navigating to a new page
+  useEffect(() => {
+    setIsNavCollapsed(true);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const toggleNavbar = () => {
+    setIsNavCollapsed(!isNavCollapsed);
+  };
+
+  // Custom styles
+  const navbarStyle = {
+    transition: 'all 0.3s ease',
+    background: scrolled 
+      ? 'linear-gradient(135deg, #1a56db 0%, #1e429f 100%)' 
+      : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+    padding: scrolled ? '0.5rem 1rem' : '1rem',
+    boxShadow: scrolled 
+      ? '0 4px 12px rgba(0, 0, 0, 0.1)' 
+      : '0 2px 10px rgba(0, 0, 0, 0.08)'
+  };
+
+  const activeNavLinkStyle = {
+    position: 'relative',
+    fontWeight: '600',
+    color: '#ffffff'
+  };
+
+  const activeNavLinkAfter = {
+    content: '""',
+    position: 'absolute',
+    bottom: '0',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '70%',
+    height: '3px',
+    backgroundColor: '#ffffff',
+    borderRadius: '2px'
+  };
+
+  const logoStyle = {
+    fontSize: '1.5rem',
+    fontWeight: '700',
+    background: '-webkit-linear-gradient(45deg, #ffffff, #e2e8f0)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
-      <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/">
-          🎟️ Ticket Booking
+    <nav 
+      className="navbar navbar-expand-lg navbar-dark sticky-top" 
+      style={navbarStyle}
+    >
+      <div className="container">
+        <Link 
+          className="navbar-brand d-flex align-items-center" 
+          to="/"
+          style={{transition: 'all 0.3s ease'}}
+        >
+          <span className="me-2" style={{fontSize: '1.6rem', filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.2))'}}>
+            🎟️
+          </span>
+          <span className="d-none d-sm-inline" style={logoStyle}>
+            Ticket Booking
+          </span>
+          <span className="d-inline d-sm-none" style={logoStyle}>
+            TixBook
+          </span>
         </Link>
+        
         <button
-          className="navbar-toggler"
+          className="navbar-toggler border-0 focus-ring focus-ring-light"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
+          onClick={toggleNavbar}
           aria-controls="navbarContent"
-          aria-expanded="false"
+          aria-expanded={!isNavCollapsed}
           aria-label="Toggle navigation"
+          style={{
+            padding: '0.4rem',
+            boxShadow: '0 0 0 rgba(255, 255, 255, 0)',
+            transition: 'all 0.2s ease'
+          }}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarContent">
+        <div 
+          className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} 
+          id="navbarContent"
+          style={{
+            transition: 'all 0.3s ease-in-out'
+          }}
+        >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
+              <Link 
+                className={`nav-link px-3 py-2 mx-1 ${location.pathname === '/' ? 'active' : ''}`} 
+                to="/"
+                style={location.pathname === '/' ? activeNavLinkStyle : {}}
+              >
+                <div className="d-flex align-items-center">
+                  <i className="bi bi-house-door me-2"></i>
+                  <span>Home</span>
+                </div>
+                {location.pathname === '/' && (
+                  <span className="d-none d-lg-block" style={activeNavLinkAfter}></span>
+                )}
+              </Link>
             </li>
+            
             {isAuthenticated && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/events">Events</Link>
+                  <Link 
+                    className={`nav-link px-3 py-2 mx-1 ${location.pathname === '/events' ? 'active' : ''}`} 
+                    to="/events"
+                    style={location.pathname === '/events' ? activeNavLinkStyle : {}}
+                  >
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-calendar-event me-2"></i>
+                      <span>Events</span>
+                    </div>
+                    {location.pathname === '/events' && (
+                      <span className="d-none d-lg-block" style={activeNavLinkAfter}></span>
+                    )}
+                  </Link>
                 </li>
+                
                 <li className="nav-item">
-                  <Link className="nav-link" to="/my-bookings">My Bookings</Link>
+                  <Link 
+                    className={`nav-link px-3 py-2 mx-1 ${location.pathname === '/my-bookings' ? 'active' : ''}`} 
+                    to="/my-bookings"
+                    style={location.pathname === '/my-bookings' ? activeNavLinkStyle : {}}
+                  >
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-ticket-perforated me-2"></i>
+                      <span>My Bookings</span>
+                    </div>
+                    {location.pathname === '/my-bookings' && (
+                      <span className="d-none d-lg-block" style={activeNavLinkAfter}></span>
+                    )}
+                  </Link>
                 </li>
+                
                 {isAdmin && (
                   <li className="nav-item">
-                    <Link className="nav-link" to="/admin">Admin</Link>
+                    <Link 
+                      className={`nav-link px-3 py-2 mx-1 ${location.pathname === '/admin' ? 'active' : ''}`} 
+                      to="/admin"
+                      style={location.pathname === '/admin' ? activeNavLinkStyle : {}}
+                    >
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-shield-lock me-2"></i>
+                        <span>Admin</span>
+                      </div>
+                      {location.pathname === '/admin' && (
+                        <span className="d-none d-lg-block" style={activeNavLinkAfter}></span>
+                      )}
+                    </Link>
                   </li>
                 )}
               </>
@@ -498,20 +744,86 @@ const Navbar = () => {
             {!isAuthenticated ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
+                  <Link 
+                    className={`nav-link px-3 py-2 mx-1 ${location.pathname === '/login' ? 'active' : ''}`} 
+                    to="/login"
+                    style={location.pathname === '/login' ? activeNavLinkStyle : {}}
+                  >
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-box-arrow-in-right me-2"></i>
+                      <span>Login</span>
+                    </div>
+                    {location.pathname === '/login' && (
+                      <span className="d-none d-lg-block" style={activeNavLinkAfter}></span>
+                    )}
+                  </Link>
                 </li>
+                
                 <li className="nav-item">
-                  <Link className="nav-link" to="/register">Register</Link>
+                  <Link 
+                    className={`nav-link px-3 py-2 mx-1 ${location.pathname === '/register' ? 'active' : ''}`}
+                    to="/register"
+                    style={{
+                      ...(location.pathname === '/register' ? activeNavLinkStyle : {}),
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      borderRadius: '8px',
+                      marginLeft: '8px',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = location.pathname === '/register' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.15)';
+                    }}
+                  >
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-person-plus me-2"></i>
+                      <span>Register</span>
+                    </div>
+                    {location.pathname === '/register' && (
+                      <span className="d-none d-lg-block" style={activeNavLinkAfter}></span>
+                    )}
+                  </Link>
                 </li>
               </>
             ) : (
               <>
-                <li className="nav-item d-flex align-items-center text-white me-3">
-                  <i className="bi bi-person-circle me-1"></i>
-                  {user?.username}
+                <li className="nav-item d-flex align-items-center text-white me-1 me-lg-3 py-2 py-lg-0">
+                  <span className="d-flex align-items-center" 
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '20px',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    <i className="bi bi-person-circle me-2" style={{fontSize: '1.1rem'}}></i>
+                    <span className={screenWidth < 400 ? 'd-none' : ''}>{user?.username}</span>
+                  </span>
                 </li>
-                <li className="nav-item">
-                  <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+                
+                <li className="nav-item mb-2 mb-lg-0">
+                  <button 
+                    className="btn btn-sm rounded-pill px-3 py-2" 
+                    onClick={handleLogout}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                    }}
+                  >
+                    <i className="bi bi-box-arrow-right me-1"></i>
                     Logout
                   </button>
                 </li>
